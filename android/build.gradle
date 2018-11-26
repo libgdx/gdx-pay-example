@@ -11,7 +11,14 @@ android {
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
         }
-
+        amazon {
+            java.srcDirs = ['src-amazon']
+        }
+        google {
+            java.srcDirs = ['src-google']
+            // uncomment if you need some manifest changes just for this flavor
+            // manifest.srcFile 'AndroidManifest-google.xml'
+        }
     }
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
@@ -21,6 +28,21 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
     }
+
+    flavorDimensions "type"
+    productFlavors {
+        amazon { dimension "type" }
+        google { dimension "type" }
+    }
+}
+
+repositories {
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencies {
+    googleCompile "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
+    amazonCompile "com.badlogicgames.gdxpay:gdx-pay-android-amazon:$gdxPayVersion"
 }
 
 

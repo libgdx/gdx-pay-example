@@ -43,3 +43,10 @@
    boolean reportFixture(long);
    float   reportRayFixture(long, float, float, float, float, float);
 }
+
+#IAP
+-keep class com.android.vending.billing.**
+-dontwarn com.amazon.**
+-keep class com.amazon.** {*;}
+-keepattributes *Annotation*
+-optimizations !code/allocation/variable

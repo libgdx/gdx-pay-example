@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class GdxPayApp extends ApplicationAdapter {
     public static final String REPOLINK = "https://github.com/libgdx/gdx-pay";
+    public PurchaseManager purchaseManager;
 
     Skin skin;
     Stage stage;
@@ -49,6 +51,12 @@ public class GdxPayApp extends ApplicationAdapter {
         table.row();
         table.add(repoLink).padBottom(20).colspan(3);
         table.row();
+
+        if (purchaseManager != null) {
+            table.add(new Label("Purchase Manager: " + purchaseManager.storeName(), skin));
+        } else {
+            table.add(new Label("No purchase manager set.", skin));
+        }
 
 
     }
