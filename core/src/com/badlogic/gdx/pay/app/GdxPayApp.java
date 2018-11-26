@@ -5,11 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
@@ -54,6 +58,15 @@ public class GdxPayApp extends ApplicationAdapter {
 
         if (purchaseManager != null) {
             table.add(new Label("Purchase Manager: " + purchaseManager.storeName(), skin));
+            table.row();
+            Button openShopButton = new TextButton("Open shop", skin);
+            openShopButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    new MyFancyInAppShop(GdxPayApp.this).show(stage);
+                }
+            });
+            table.add(openShopButton);
         } else {
             table.add(new Label("No purchase manager set.", skin));
         }
@@ -90,5 +103,8 @@ public class GdxPayApp extends ApplicationAdapter {
         stage.dispose();
         skin.dispose();
         atlas.dispose();
+        
+        if (purchaseManager != null)
+            purchaseManager.dispose();
     }
 }
