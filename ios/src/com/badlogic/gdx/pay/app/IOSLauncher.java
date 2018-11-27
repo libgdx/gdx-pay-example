@@ -5,12 +5,15 @@ import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+import com.badlogic.gdx.pay.ios.apple.PurchaseManageriOSApple;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new com.badlogic.gdx.pay.app.GdxPayApp(), config);
+        GdxPayApp game = new GdxPayApp();
+        game.purchaseManager = new PurchaseManageriOSApple();
+        return new IOSApplication(game, config);
     }
 
     public static void main(String[] argv) {
