@@ -2,6 +2,12 @@
 
 Test and demo app for gdx-pay https://github.com/libgdx/gdx-pay
 
+Featuring: 
+
+* **Android flavors** for gdx-pay-googlebilling and gdx-pay-amazon
+* ios-moe and iosrobovm with IAP implementations
+* working GWT module without an injected implementation (graceful fallback)
+
 ## Documentation
 See the documentation and wiki at the main project for more information.
 
