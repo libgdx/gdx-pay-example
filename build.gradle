@@ -24,7 +24,7 @@ allprojects {
         appName = "gdx-pay-app"
         gdxVersion = '1.9.8'
         roboVMVersion = '2.3.5'
-        gdxPayVersion = '0.11.3'
+        gdxPayVersion = '0.12.0-SNAPSHOT'
     }
 
     repositories {
