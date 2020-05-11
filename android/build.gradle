@@ -1,6 +1,7 @@
 android {
     buildToolsVersion "28.0.3"
     compileSdkVersion 27
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -13,6 +14,9 @@ android {
         }
         amazon {
             java.srcDirs = ['src-amazon']
+        }
+        huawei {
+            java.srcDirs = ['src-huawei']
         }
         google {
             java.srcDirs = ['src-google']
@@ -33,16 +37,23 @@ android {
     productFlavors {
         amazon { dimension "type" }
         google { dimension "type" }
+        huawei {
+            dimension "type"
+            minSdkVersion 17
+        }
     }
 }
 
 repositories {
     maven { url "https://jcenter.bintray.com" }
+    maven { url 'https://developer.huawei.com/repo/' } // HUAWEI Maven repository
 }
 
 dependencies {
     googleCompile "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
     amazonCompile "com.badlogicgames.gdxpay:gdx-pay-android-amazon:$gdxPayVersion"
+    huaweiCompile 'com.huawei.agconnect:agconnect-core:1.0.0.300'
+    huaweiCompile "com.huawei.hms:iap:4.0.0.300"
 }
 
 
@@ -120,7 +131,7 @@ eclipse {
 
     classpath {
         plusConfigurations += [ project.configurations.compile ]        
-        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'       
+        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'
     }
 
     project {
@@ -156,3 +167,5 @@ idea {
         }
     }
 }
+
+apply plugin: 'com.huawei.agconnect'
