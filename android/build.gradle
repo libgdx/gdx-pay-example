@@ -50,10 +50,9 @@ repositories {
 }
 
 dependencies {
-    googleCompile "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
-    amazonCompile "com.badlogicgames.gdxpay:gdx-pay-android-amazon:$gdxPayVersion"
-    huaweiCompile 'com.huawei.agconnect:agconnect-core:1.0.0.300'
-    huaweiCompile "com.huawei.hms:iap:4.0.0.300"
+    googleImplementation "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
+    amazonImplementation "com.badlogicgames.gdxpay:gdx-pay-android-amazon:$gdxPayVersion"
+    huaweiImplementation "com.badlogicgames.gdxpay:gdx-pay-android-huawei:$gdxPayVersion"
 }
 
 

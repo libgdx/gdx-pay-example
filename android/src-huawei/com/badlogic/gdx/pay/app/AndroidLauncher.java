@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.pay.Transaction;
-import com.badlogic.gdx.pay.huawei.HuaweiPurchaseManager;
-import com.badlogic.gdx.pay.huawei.IAPListener;
+import com.badlogic.gdx.pay.android.huawei.HuaweiPurchaseManager;
+import com.badlogic.gdx.pay.android.huawei.IAPListener;
 import com.huawei.hms.iap.Iap;
 import com.huawei.hms.iap.IapApiException;
 import com.huawei.hms.iap.IapClient;
