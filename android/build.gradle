@@ -44,6 +44,10 @@ android {
     }
 }
 
+if (getGradle().getStartParameter().getTaskRequests().toString().toLowerCase().contains("huawei")) {
+    apply plugin: 'com.huawei.agconnect'
+}
+
 repositories {
     maven { url "https://jcenter.bintray.com" }
     maven { url 'https://developer.huawei.com/repo/' } // HUAWEI Maven repository
@@ -166,5 +170,3 @@ idea {
         }
     }
 }
-
-apply plugin: 'com.huawei.agconnect'

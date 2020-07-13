@@ -5,6 +5,7 @@ import android.content.IntentSender;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidEventListener;
 import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.pay.android.huawei.HuaweiPurchaseManager;
 import com.badlogic.gdx.pay.android.huawei.IAPListener;
@@ -23,7 +24,7 @@ import org.json.JSONException;
  * Created by Francesco Stranieri on 11.05.2020.
  */
 
-public class AndroidLauncher extends GenericAndroidLauncher implements IAPListener {
+public class AndroidLauncher extends GenericAndroidLauncher implements IAPListener, AndroidEventListener {
 
     private final int PURCHASE_STATUS_RESULT_CODE = 7265;
 
@@ -31,6 +32,7 @@ public class AndroidLauncher extends GenericAndroidLauncher implements IAPListen
 
     @Override
     protected void initFlavor(GdxPayApp game) {
+        addAndroidEventListener(this);
         this.game = game;
         super.initFlavor(this.game);
 
@@ -71,48 +73,46 @@ public class AndroidLauncher extends GenericAndroidLauncher implements IAPListen
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case PURCHASE_STATUS_RESULT_CODE:
-                if (resultCode == RESULT_OK) {
-                    if (data == null) {
-                        Log.e("onActivityResult", "data is null");
-                        return;
-                    }
-                    PurchaseResultInfo purchaseResultInfo = Iap.getIapClient(this).parsePurchaseResultInfoFromIntent(data);
-                    switch (purchaseResultInfo.getReturnCode()) {
-                        case OrderStatusCode.ORDER_STATE_CANCEL:
-                            // User cancel payment.
-                            Gdx.app.log("ORDER_STATE", "CANCEL");
-                            break;
-                        case OrderStatusCode.ORDER_STATE_FAILED:
-                        case OrderStatusCode.ORDER_PRODUCT_OWNED:
-                            // to check if there exists undelivered products.
-                            Gdx.app.log("ORDER_STATE", "FAILED/OWNED");
-                            break;
-                        case OrderStatusCode.ORDER_STATE_SUCCESS:
-                            // pay success.
-                            String inAppPurchaseData = purchaseResultInfo.getInAppPurchaseData();
-
-                            try {
-                                InAppPurchaseData inAppPurchaseDataItem = new InAppPurchaseData(inAppPurchaseData);
-                                Transaction transaction = new Transaction();
-                                transaction.setIdentifier(inAppPurchaseDataItem.getProductId());
-                                Gdx.app.log("ORDER_STATE", "SUCCESS productId: " + transaction.getIdentifier());
-
-                                //TODO: REMOVE THE FOLLOWING LINES, ARE ONLY TO FORCE THE CONSUMABLE TEST
-                                if (inAppPurchaseDataItem.getPurchaseType() == IapClient.PriceType.IN_APP_CONSUMABLE) {
-                                    ((HuaweiPurchaseManager) game.purchaseManager).consumeProduct(inAppPurchaseData);
-                                }
-                            } catch (JSONException e) {
-                                Gdx.app.error("ORDER_STATE_SUCCESS", e.getMessage());
-                            }
-                            break;
-                    }
+        if (requestCode == PURCHASE_STATUS_RESULT_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (data == null) {
+                    Log.e("onActivityResult", "data is null");
+                    return;
                 }
-                break;
+                PurchaseResultInfo purchaseResultInfo = Iap.getIapClient(this).parsePurchaseResultInfoFromIntent(data);
+                switch (purchaseResultInfo.getReturnCode()) {
+                    case OrderStatusCode.ORDER_STATE_CANCEL:
+                        // User cancel payment.
+                        Gdx.app.log("ORDER_STATE", "CANCEL");
+                        break;
+                    case OrderStatusCode.ORDER_STATE_FAILED:
+                    case OrderStatusCode.ORDER_PRODUCT_OWNED:
+                        // to check if there exists undelivered products.
+                        Gdx.app.log("ORDER_STATE", "FAILED/OWNED");
+                        break;
+                    case OrderStatusCode.ORDER_STATE_SUCCESS:
+                        // pay success.
+                        String inAppPurchaseData = purchaseResultInfo.getInAppPurchaseData();
+
+                        try {
+                            InAppPurchaseData inAppPurchaseDataItem = new InAppPurchaseData(inAppPurchaseData);
+                            Transaction transaction = new Transaction();
+                            transaction.setIdentifier(inAppPurchaseDataItem.getProductId());
+                            Gdx.app.log("ORDER_STATE", "SUCCESS productId: " + transaction.getIdentifier());
+
+                            //THE FOLLOWING LINES ARE TO CONSUME A CONSUMABLE PRODUCT
+                            if (inAppPurchaseDataItem.getPurchaseType() == IapClient.PriceType.IN_APP_CONSUMABLE) {
+                                ((HuaweiPurchaseManager) game.purchaseManager).consumeProduct(inAppPurchaseData);
+                            }
+                        } catch (JSONException e) {
+                            Gdx.app.error("ORDER_STATE_SUCCESS", e.getMessage());
+                        }
+                        break;
+                }
+            }
         }
     }
 }
