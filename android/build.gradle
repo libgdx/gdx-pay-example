@@ -1,6 +1,19 @@
 android {
     buildToolsVersion "28.0.3"
     compileSdkVersion 27
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -13,6 +26,9 @@ android {
         }
         amazon {
             java.srcDirs = ['src-amazon']
+        }
+        huawei {
+            java.srcDirs = ['src-huawei']
         }
         google {
             java.srcDirs = ['src-google']
@@ -33,16 +49,26 @@ android {
     productFlavors {
         amazon { dimension "type" }
         google { dimension "type" }
+        huawei {
+            dimension "type"
+            minSdkVersion 17
+        }
     }
+}
+
+if (getGradle().getStartParameter().getTaskRequests().toString().toLowerCase().contains("huawei")) {
+    apply plugin: 'com.huawei.agconnect'
 }
 
 repositories {
     maven { url "https://jcenter.bintray.com" }
+    maven { url 'https://developer.huawei.com/repo/' } // HUAWEI Maven repository
 }
 
 dependencies {
-    googleCompile "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
-    amazonCompile "com.badlogicgames.gdxpay:gdx-pay-android-amazon:$gdxPayVersion"
+    googleImplementation "com.badlogicgames.gdxpay:gdx-pay-android-googlebilling:$gdxPayVersion"
+    amazonImplementation "com.badlogicgames.gdxpay:gdx-pay-android-amazon:$gdxPayVersion"
+    huaweiImplementation "com.badlogicgames.gdxpay:gdx-pay-android-huawei:$gdxPayVersion"
 }
 
 
@@ -61,10 +87,10 @@ task copyAndroidNatives() {
             def outputDir = null
             if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
             if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
-            if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-            if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-            if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-            if(outputDir != null) {
+            if (jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+            if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if (outputDir != null) {
                 copy {
                     from zipTree(jar)
                     into outputDir
@@ -119,8 +145,8 @@ eclipse {
     }
 
     classpath {
-        plusConfigurations += [ project.configurations.compile ]        
-        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'       
+        plusConfigurations += [project.configurations.compile]
+        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'
     }
 
     project {
@@ -138,7 +164,7 @@ eclipse {
 idea {
     module {
         sourceDirs += file("src");
-        scopes = [ COMPILE: [plus:[project.configurations.compile]]]        
+        scopes = [COMPILE: [plus: [project.configurations.compile]]]
 
         iml {
             withXml {
@@ -148,7 +174,7 @@ idea {
                 builder.component(name: "FacetManager") {
                     facet(type: "android", name: "Android") {
                         configuration {
-                            option(name: "UPDATE_PROPERTY_FILES", value:"true")
+                            option(name: "UPDATE_PROPERTY_FILES", value: "true")
                         }
                     }
                 }
