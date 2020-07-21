@@ -2,20 +2,9 @@ android {
     buildToolsVersion "28.0.3"
     compileSdkVersion 27
 
-    signingConfigs {
-        debugConfig
-                {
-                    storeFile file("./debugKeystore.ks")
-                    storePassword "test123"
-                    keyAlias "key0"
-                    keyPassword "test123"
-                }
-    }
-
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.debugConfig
         }
         release {
             debuggable false
